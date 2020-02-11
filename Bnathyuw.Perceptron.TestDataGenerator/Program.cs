@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using static System.Math;
 
 namespace Bnathyuw.Perceptron.TestDataGenerator
@@ -8,10 +9,11 @@ namespace Bnathyuw.Perceptron.TestDataGenerator
         static void Main(string[] args)
         {
             var pointGenerator = new PointGenerator(10, 6, 1);
-            
-            for (var i = 0; i < 2000; i++)
+
+
+            var points = pointGenerator.GeneratePoints(2000);
+            foreach (var point in points)
             {
-                var point = pointGenerator.GeneratePoint();
                 Console.WriteLine(point);
             }
         }
@@ -62,6 +64,18 @@ namespace Bnathyuw.Perceptron.TestDataGenerator
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        public IEnumerable<Point> GeneratePoints(int numberOfPointsToCreate)
+        {
+            var points = new List<Point>();
+            for (var i = 0; i < numberOfPointsToCreate; i++)
+            {
+                var point = GeneratePoint();
+                points.Add(point);
+            }
+
+            return points;
         }
     }
 

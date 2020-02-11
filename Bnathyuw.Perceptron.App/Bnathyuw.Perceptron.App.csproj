@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp3.0</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,6 +14,10 @@
         <Link>Data\training_10_6_1.csv</Link>
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Bnathyuw.Perceptron.TestDataGenerator\Bnathyuw.Perceptron.TestDataGenerator.csproj" />
     </ItemGroup>
 
 </Project>
