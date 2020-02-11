@@ -22,15 +22,39 @@ namespace Bnathyuw.Perceptron.App
 
         static void Main(string[] args)
         {
-            // var neuron = Train(Neuron.Untrained(NumberOfInputs, TrainingRate), ReadDataFrom(TrainingDataFile));
-            //
-            // var results = Test(neuron, ReadDataFrom(TestDataFile));
+            TestFileData();
+
+            TestGeneratedData();
+        }
+
+        private static void TestFileData()
+        {
+            var neuron = Train(Neuron.Untrained(NumberOfInputs, TrainingRate), ReadDataFrom(TrainingDataFile));
+
+            var results = Test(neuron, ReadDataFrom(TestDataFile));
             
+            Console.WriteLine("File Data");
+            OutputResults(results);
+        }
+
+        private static void TestGeneratedData()
+        {
             var neuron = Train(Neuron.Untrained(NumberOfInputs, TrainingRate), GenerateData(1000));
 
             var results = Test(neuron, GenerateData(2000));
-            
-            Console.WriteLine($"Total correct {results.Count(x => x)}; total incorrect {results.Count(x => !x)}");
+
+            Console.WriteLine("Generated Data");
+            OutputResults(results);
+        }
+
+        private static void OutputResults((double actual, double predicted)[] results)
+        {
+            Console.WriteLine($"Confusion Matrix:");
+            Console.WriteLine($"            | Actual T | Actual F");
+            Console.WriteLine(
+                $"Predicted T | {results.Count(x => x.actual > 0 && x.predicted > 0),8} | {results.Count(x => x.actual < 0 && x.predicted > 0),8}");
+            Console.WriteLine(
+                $"Predicted F | {results.Count(x => x.actual > 0 && x.predicted < 0),8} | {results.Count(x => x.actual < 0 && x.predicted < 0),8}");
         }
 
         private static IEnumerable<DataRow> ReadDataFrom(string file) => File.ReadLines(file).Select(ParseValues);
@@ -48,8 +72,8 @@ namespace Bnathyuw.Perceptron.App
         private static Neuron Train(Neuron seedNeuron, IEnumerable<DataRow> trainingData) =>
             trainingData.Aggregate(seedNeuron, (current, dataRow) => current.Calibrate(dataRow));
 
-        private static bool[] Test(Neuron neuron, IEnumerable<DataRow> testData) =>
-            testData.Select(dataRow => Abs(neuron.Calculate(dataRow) - dataRow.Output) < 1e-10)
+        private static (double actual, double predicted)[] Test(Neuron neuron, IEnumerable<DataRow> testData) =>
+            testData.Select(dataRow => (actual: dataRow.Output, predicted: neuron.Calculate(dataRow)))
                 .ToArray();
     }
 }
